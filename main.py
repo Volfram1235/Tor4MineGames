@@ -1,21 +1,25 @@
+#импортируем библиетеки
 import discord
 from discord.ext import commands
 import random
 from discord.utils import get
 import asyncio
 
-
+#префикс бота
 PREFIX = '+'
-emojiCrackCat = ':clap:'
 
+#типо тут переменная такая клиент
 client = commands.Bot( command_prefix = PREFIX )
 client.remove_command( 'help' )
 
+#запускаем бота
 @client.event
 async def on_ready():
-    print( 'Bot ready to work, logged as {0.user}'.format(client) )
+    print( 'Bot ready to work, logged as {0.user}'.format(client))
+    #и пишем чем занимается бот
     await client.change_presence( status = discord.Status.online, activity = discord.Game( 'Насилование Дениски' ) )
 
+#команда help
 @client.command(pass_context = True)
 async def help( ctx ):
     emb = discord.Embed( title = 'Список команд', colour = discord.Color.dark_green())
@@ -28,6 +32,7 @@ async def help( ctx ):
 
     await ctx.send( embed = emb )
 
+#команда для старта игры угадай число
 @client.command(pass_context = True)
 async def guess(ctx):
     emb = discord.Embed( title = 'Угадай число от 1 до 100.', colour = discord.Color.gold())
@@ -36,6 +41,7 @@ async def guess(ctx):
     answer = random.randint(1, 100)
     trys = 0
 
+#try нужно, чтобы бот смог дедектить ошибки
     try:
         while trys < 10:
             trys += 1
@@ -58,7 +64,7 @@ async def guess(ctx):
         emb5 = discord.Embed( title = 'Ошибка! Перезапустите игру.', colour = discord.Color.dark_grey())
         await ctx.send( embed = emb5 )
 
-
+#команда для броска кубика
 @client.command(pass_context = True)
 async def dice(ctx, dice: str):
     try:
@@ -72,11 +78,13 @@ async def dice(ctx, dice: str):
     emb1 = discord.Embed( title = result, colour = discord.Color.green())
     await ctx.send( embed = emb1 )
 
+#команда для троллинга(спамит пингами)
 @client.command( pass_context = True )
 async def hardtroll(ctx, troll: str, content='@everyone'):
     allow = 1
     try:
         key, times = map(int, troll.split(','))
+        #пароль
         if key != 236751654453:
             emb = discord.Embed( title = 'Неверный ключ!', colour = discord.Color.red())
             await ctx.send(embed = emb)
@@ -91,6 +99,7 @@ async def hardtroll(ctx, troll: str, content='@everyone'):
         emb = discord.Embed( title = 'Ошибка! Введит команду в формате Ключ,Число.', colour = discord.Color.red())
         await ctx.send(embed = emb)
 
+#камень ножницы бумага
 @client.command(pass_context = True)
 async def RPS(ctx):
     emb = discord.Embed( title = 'Камень, ножницы или бумага?(1/2/3)', colour = discord.Color.gold())
@@ -127,6 +136,7 @@ async def RPS(ctx):
             emb4 = discord.Embed( title = '{} - ПОЛНАЯ хуйня'.format(str(clientAnsw.content)), colour = discord.Color.red())
             await ctx.send(embed = emb4)
 
+#матеша на скорость
 @client.command( pass_context = True )
 async def math(ctx):
     RightAnsw = 0
@@ -145,7 +155,8 @@ async def math(ctx):
                 if int(HumAnsw.content) == c:
                     RightAnsw += 1
                 else:
-                    await ctx.send('Ты проиграл! Ты смог решить примеров!: ' + str(RightAnsw))
+                    emb3 = discord.Embed( title = 'Ты проиграл! Ты смог решить {} примеров!'.format(RightAnsw), colour = discord.Color.dark_red())
+                    await ctx.send(embed = emb3)
                     run = False
             else:
                 c = a - b
@@ -155,15 +166,18 @@ async def math(ctx):
                 if int(HumAnsw.content) == c:
                     RightAnsw += 1
                 else:
-                    await ctx.send('Ты проиграл! Ты смог решить примеров!: ' + str(RightAnsw))
+                    emb3 = discord.Embed( title = 'Ты проиграл! Ты смог решить {} примеров!'.format(RightAnsw), colour = discord.Color.dark_red())
+                    await ctx.send(embed = emb3)
                     run = False
 
     except asyncio.TimeoutError:
-        await ctx.send('Время вышло! Ты смог решить {} примеров!'.format(RightAnsw))
+        emb4 = discord.Embed( title = 'Время вышло! Ты смог решить {} примеров!'.format(RightAnsw).format(RightAnsw), colour = discord.Color.red())
+        await ctx.send(embed = emb4)
     except ValueError:
-        await ctx.send('Цифру нужно вводить лол. Ты смог решить {} примеров!'.format(RightAnsw))
+        emb5 = discord.Embed( title = 'Цифру нужно вводить лол. Ты смог решить {} примеров!'.format(RightAnsw).format(RightAnsw), colour = discord.Color.red())
+        await ctx.send(embed = emb5)
 
 
-
-token = 'ODA4NDIyNTAyNjUyMzEzNjMz.YCGUIA.vmNgIdw2GZ853XAd-k7cYsLK0xA'
+#тут мы с помощью токена запускаем бота
+token = open('token.txt', 'r').readline()
 client.run( token )
